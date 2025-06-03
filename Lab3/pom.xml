@@ -29,6 +29,21 @@
       <artifactId>spark-sql_2.12</artifactId>
       <version>3.5.1</version>
     </dependency>
+
+    <!-- Hadoop Common (necesario para que Spark no falle) -->
+    <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-common</artifactId>
+        <version>3.3.5</version>
+    </dependency>
+
+    <!-- Hadoop Client para Spark -->
+    <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-client</artifactId>
+        <version>3.3.5</version>
+    </dependency>
+
     </dependencies>
 
     <!-- Configuración del compilador (opcional) -->

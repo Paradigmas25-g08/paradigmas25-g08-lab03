@@ -8,6 +8,16 @@ import java.net.URISyntaxException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 import java.text.ParseException;
+import scala.Tuple2;
+import java.util.List;
+import java.util.ArrayList;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+//Spark
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.SparkConf;
 
 
 public class FeedReaderMain {
@@ -30,30 +40,46 @@ public class FeedReaderMain {
 
             SubscriptionParser subParser = new SubscriptionParser();
             Subscription subs = subParser.FileParser("./src/main/config/subscriptions.json");
+
+            // Setup Spark
+            SparkConf conf = new SparkConf().setAppName("FeedReaderApp").setMaster("local[*]");
+            JavaSparkContext sc = new JavaSparkContext(conf);
+            List<String> urlsToFetch = new ArrayList<>();
             
             for (int i = 0; i < subs.getSubscriptionsList().size(); i++) {
-                if(subs.getSingleSubscription(i).getUrlType().equals("rss")){
-                    String Url = subs.getSingleSubscription(i).getUrl();
-                    for (int j=0 ; j<subs.getSingleSubscription(i).getUrlParams().size(); j++){
-                        String Param = subs.getSingleSubscription(i).getUrlParams(j);
-                    
-                        httpRequester requester = new httpRequester();
-                        String feedRssString = requester.getFeedRss(Url, Param);
                 
-                        RssParser rssParser = new RssParser();
-                        Feed rssFeed = rssParser.getFeed(feedRssString);
-                        
-                        rssFeed.prettyPrint();
-                    }
-                } else {
-                    System.out.println("Caso reddit");
+                String url = subs.getSingleSubscription(i).getUrl();
+                for (int j=0 ; j<subs.getSingleSubscription(i).getUrlParams().size(); j++){
+                    String param = subs.getSingleSubscription(i).getUrlParams(j);
+                    
+                    String encodedParam = URLEncoder.encode(param, StandardCharsets.UTF_8); 
+                    String urlToFetch = String.format(url, encodedParam);
+                    
+                    urlsToFetch.add(urlToFetch);
                 }
-            
+                
             }
 
+            JavaRDD<String> urlsRDD = sc.parallelize(urlsToFetch);
 
+            JavaRDD<Feed> feedsRDD = urlsRDD.map(url -> {
+                httpRequester requester = new httpRequester();
+                String feedRssString = requester.getFeedRss(url);
+        
+                RssParser rssParser = new RssParser();
+                Feed rssFeed = rssParser.getFeed(feedRssString);
 
+                return rssFeed;
+            });
+            
 
+            List<Feed> feeds = feedsRDD.collect();
+
+            for (Feed feed : feeds) {
+                feed.prettyPrint();
+            }
+
+            sc.stop();
 
 
         } else if (args.length == 1){
@@ -81,12 +107,14 @@ public class FeedReaderMain {
 
             for (int i = 0; i < subs.getSubscriptionsList().size(); i++) {
                 if(subs.getSingleSubscription(i).getUrlType().equals("rss")){
-                    String Url = subs.getSingleSubscription(i).getUrl();
+                    String url = subs.getSingleSubscription(i).getUrl();
                     for (int j=0 ; j<subs.getSingleSubscription(i).getUrlParams().size(); j++){
-                        String Param = subs.getSingleSubscription(i).getUrlParams(j);
+                        String param = subs.getSingleSubscription(i).getUrlParams(j);
+                        String encodedParam = URLEncoder.encode(param, StandardCharsets.UTF_8); 
+                        String urlToFetch = String.format(url, encodedParam);
                     
                         httpRequester requester = new httpRequester();
-                        String feedRssString = requester.getFeedRss(Url, Param);
+                        String feedRssString = requester.getFeedRss(urlToFetch);
                 
                         RssParser rssParser = new RssParser();
                         Feed rssFeed = rssParser.getFeed(feedRssString);
