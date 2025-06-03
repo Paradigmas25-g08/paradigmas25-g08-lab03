@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /* Esta clase se encarga de realizar efectivamente el pedido de feed al servidor de noticias
  
@@ -20,12 +18,10 @@ import java.nio.charset.StandardCharsets;
 
 public class httpRequester {
 
-    public String getFeedRss(String urlFeed, String param) throws URISyntaxException, MalformedURLException, IOException, ProtocolException{
+    public String getFeedRss(String finalUrl) throws URISyntaxException, MalformedURLException, IOException, ProtocolException{
 
         //Creamos la conexion y realizamos la peticion a traves de ella. 
         String feedRssXml = null;
-        String encodedParam = URLEncoder.encode(param, StandardCharsets.UTF_8); 
-        String finalUrl = String.format(urlFeed, encodedParam);
         URL url = new URI(finalUrl).toURL();
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
