@@ -2,13 +2,14 @@ package feed;
 
 import namedEntity.*;
 import subscription.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
 /*Esta clase modela la lista de articulos de un determinado feed*/
-public class Feed {
+public class Feed implements Serializable{
 String siteName;
 List<Article> articleList;
 
