@@ -1,14 +1,5 @@
 [
-    {
-        "url": "https://rss.nytimes.com/services/xml/rss/nyt/%s.xml",
-        "urlParams": ["Business", "Technology"],
-        "urlType": "rss"
-    },
-    {
-        "url": "https://ayearofreadingtheworld.com/feed/",
-        "urlParams": ["default"],
-        "urlType": "rss"
-    },
+    
     {
         "url": "https://www.reddit.com/r/books/.rss",
         "urlParams": ["default"],
@@ -101,11 +92,6 @@
     },
     {
         "url": "https://www.joelonsoftware.com/feed/",
-        "urlParams": ["default"],
-        "urlType": "rss"
-    },
-    {
-        "url": "https://softwareengineeringdaily.com/category/podcast/feed/",
         "urlParams": ["default"],
         "urlType": "rss"
     },
