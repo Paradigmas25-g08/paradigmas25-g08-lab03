@@ -34,19 +34,31 @@ public class RssParser extends GeneralParser{
         DocumentBuilderFactory factory =DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = factory.newDocumentBuilder();
 
-        StringBuilder xmlBuilder = new StringBuilder(); 
-        xmlBuilder.append(feedRss);
-        ByteArrayInputStream input = new ByteArrayInputStream(xmlBuilder.toString().getBytes("UTF-8"));
+        
+        ByteArrayInputStream input = new ByteArrayInputStream(feedRss.getBytes("UTF-8"));
         
 
         Document xmldoc = docBuilder.parse(input);
 
         Element element = xmldoc.getDocumentElement();
 
+        
         //Traemos todos los hijos del root
         NodeList rootChilds = element.getChildNodes();
         //Nos quedamos solo con los hijos del nodo Channel
-        NodeList nList = rootChilds.item(1).getChildNodes();
+        NodeList nList = null;
+        for (int i = 0 ; i < rootChilds.getLength(); i++){
+            Node n = rootChilds.item(i);
+            if (n.getNodeName() == "channel"){
+                System.out.println("HOSTIA ENCONTRE EL MALDITO CHANEL");
+                nList = n.getChildNodes();
+            } else {
+                System.out.println(n.getNodeName());
+            }
+        }
+        if(nList == null){
+            return null;
+        }
         //Extraemos el nombre del sitio
         Node tempo = nList.item(1);
         Element siteT = (Element) tempo;
