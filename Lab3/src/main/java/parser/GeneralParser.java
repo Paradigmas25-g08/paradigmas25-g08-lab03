@@ -14,4 +14,12 @@ public abstract class GeneralParser {
         return formattedDate;
     }
 
+
+    public Date stringToDateAtom (String date) throws ParseException{
+        //2025-06-01T11:00:35+00:00
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss", Locale.ENGLISH);
+        String toFormat = date.split("[+]")[0].replace(String.valueOf("T"), " ");
+        Date formattedDate = formatter.parse(toFormat);
+        return formattedDate;
+    }
 }
