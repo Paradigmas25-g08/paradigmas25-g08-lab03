@@ -3,35 +3,46 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Información básica del proyecto -->
     <groupId>ParadigmasGrupo08</groupId>
     <artifactId>FeedReader</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <packaging>jar</packaging> 
 
+    <!-- Dependencias (librerías que usa tu proyecto) -->
     <dependencies>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20240303</version>
-        </dependency>
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20240303</version> <!-- Usa la última versión disponible -->
+</dependency>
+    <!-- Spark Core -->
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_2.12</artifactId>
+      <version>3.5.1</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.12</artifactId>
-            <version>3.5.1</version>
-        </dependency>
+    <!-- Spark SQL -->
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-sql_2.12</artifactId>
+      <version>3.5.1</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.12</artifactId>
-            <version>3.5.1</version>
-        </dependency>
+    <!-- Hadoop Common (necesario para que Spark no falle) -->
+    <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-common</artifactId>
+        <version>3.3.5</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>3.3.5</version>
-        </dependency>
+    <!-- Hadoop Client para Spark -->
+    <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-client</artifactId>
+        <version>3.3.5</version>
+    </dependency>
 
     <!-- JSOUP para parsear HTML -->
     <dependency>
@@ -42,36 +53,18 @@
 
     </dependencies>
 
+    <!-- Configuración del compilador (opcional) -->
     <build>
         <plugins>
-            <!-- Compilador configurado para Java 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
-                </configuration>
-            </plugin>
-
-            <!-- Plugin para ejecutar clases Java -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <classpathScope>compile</classpathScope>
+                    <source>11</source> <!-- Versión de Java -->
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 </project>
-
