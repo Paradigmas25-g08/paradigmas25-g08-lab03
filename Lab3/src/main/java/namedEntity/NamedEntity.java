@@ -2,6 +2,8 @@ package namedEntity;
 
 import java.io.Serializable;
 import namedEntity.theme.Theme;
+import java.util.Objects;
+
 
 /*Esta clase modela la nocion de entidad nombrada*/
 
