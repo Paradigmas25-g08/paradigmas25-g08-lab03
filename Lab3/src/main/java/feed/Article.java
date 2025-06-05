@@ -92,9 +92,9 @@ public class Article implements Serializable{
 	public void computeNamedEntities(Heuristic h){
 		String text = this.getTitle() + " " +  this.getText();  
 			
-		String charsToRemove = ".‘,$;%-:’()'“”!?\n";
+		String charsToRemove = ".‘,$;%-:’()'“”!?-_[]><+=*{}/\n";
 		for (char c : charsToRemove.toCharArray()) {
-			text = text.replace(String.valueOf(c), "");
+			text = text.replace(String.valueOf(c), " ");
 		}
 			
 		for (String s: text.split(" ")) {
