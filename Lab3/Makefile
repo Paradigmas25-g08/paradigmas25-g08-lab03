@@ -5,7 +5,7 @@ MAIN_CLASS=FeedReaderMain
 MAVEN=mvn
 HEURISTIC=q
 
-all: build run
+all: build run-heuristic
 
 build:
 	$(MAVEN) compile
