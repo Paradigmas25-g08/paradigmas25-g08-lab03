@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.regex.*;
 import java.util.*;
 
+import org.jsoup.Jsoup;
 
 /* Esta clase implementa el parser de feed de tipo rss (xml)
  
@@ -90,12 +91,13 @@ public class RssParser extends GeneralParser{
                 String description = "";
                 Date pubDate = null;
                 if(element.getNodeName()== "feed"){
-                    description = this.parseContentHtml(eElement.getElementsByTagName("content").item(0).getTextContent());
+                    description = parseContentHtml(eElement.getElementsByTagName("content").item(0).getTextContent());
                     pubDate = super.stringToDateAtom(eElement.getElementsByTagName("published").item(0).getTextContent());
                     link = ((Element) eElement.getElementsByTagName("link").item(0)).getAttribute("href");
                 } else {
-                    if(eElement.getElementsByTagName("description").item(0) != null){
-                        description = eElement.getElementsByTagName("description").item(0).getTextContent();
+                    if (eElement.getElementsByTagName("description").item(0) != null){
+                        String rawDesc = eElement.getElementsByTagName("description").item(0).getTextContent();
+                        description = parseContentHtml(rawDesc);
                     }
                     if (eElement.getElementsByTagName("pubDate").item(0) != null){
                         pubDate = super.stringToDate(eElement.getElementsByTagName("pubDate").item(0).getTextContent());
@@ -116,17 +118,24 @@ public class RssParser extends GeneralParser{
     }
 
     public static String parseContentHtml(String html) {
-
-        Pattern pattern = Pattern.compile("<p>(.*?)</p>");
-        Matcher matcher = pattern.matcher(html);
-
-        StringBuilder sb = new StringBuilder();
-        while (matcher.find()) {
-            sb.append(matcher.group(1).replaceAll("<[^>]+>", "")).append(" ");
-        }
-
-        String result = sb.toString().replace("&#39;", "'").trim(); 
-        return result;
+    if (html == null || html.isEmpty()) {
+        return "";
     }
+
+    // Usamos Jsoup para limpiar el HTML
+    String cleanedText = Jsoup.parse(html).text();
+
+    // Remover frases comunes de promoción automática (puedes agregar más si es necesario)
+    cleanedText = cleanedText.replaceAll("The post .*? appeared first on .*?\\.", "");
+    
+    // Eliminar espacios redundantes y caracteres raros
+    cleanedText = cleanedText
+        .replaceAll("\\s+", " ") // múltiples espacios → uno
+        .replaceAll("&#160;|&#8230;", " ") // caracteres especiales comunes
+        .replaceAll("’", "'")
+        .trim();
+
+    return cleanedText;
+}
 
 }
