@@ -1,8 +1,9 @@
 package namedEntity.heuristic;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public abstract class Heuristic {
+public abstract class Heuristic implements Serializable {
 
     private static Map<String, String> categoryMap = Map.of(
             "Microsoft", "Company", 
