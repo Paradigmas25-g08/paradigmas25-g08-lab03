@@ -1,8 +1,8 @@
 package namedEntity.person;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FirstName {
+public class FirstName implements Serializable {
 
     private String canonicForm;
     private ArrayList<String> alternativeForms;

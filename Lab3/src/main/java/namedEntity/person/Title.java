@@ -1,6 +1,7 @@
 package namedEntity.person;
+import java.io.Serializable;
 
-public class Title {
+public class Title implements Serializable{
     private String canonicForm;
     private String profesional;
 

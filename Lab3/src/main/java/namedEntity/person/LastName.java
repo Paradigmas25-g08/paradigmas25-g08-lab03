@@ -1,6 +1,7 @@
 package namedEntity.person;
+import java.io.Serializable;
 
-public class LastName {
+public class LastName implements Serializable {
 
     private String canonicForm;
     private String origin;

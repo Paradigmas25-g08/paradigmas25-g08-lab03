@@ -59,6 +59,17 @@ public class NamedEntity implements Serializable {
 		System.out.println(this.getName() + " " + this.getFrequency());
 	}
 	
+	@Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        NamedEntity that = (NamedEntity) obj;
+        return Objects.equals(this.name, that.name);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name);
+    }
 	
 }
 

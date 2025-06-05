@@ -152,15 +152,13 @@ public class FeedReaderMain {
                 return art.getNamedEntityList().iterator();
             });
 
-            JavaPairRDD<String, Integer> frequency = namedEntityRDD.mapToPair(ne -> new Tuple2<>(ne.getName(), ne.getFrequency()));
+            JavaPairRDD<NamedEntity, Integer> frequency = namedEntityRDD.mapToPair(ne -> new Tuple2<>(ne, ne.getFrequency()));
 
-            JavaPairRDD<String, Integer> counts = frequency.reduceByKey((i1, i2) -> i1 + i2);
+            JavaPairRDD<NamedEntity, Integer> counts = frequency.reduceByKey((i1, i2) -> i1 + i2);
 
-            List<Tuple2<String, Integer>> output = counts.collect();
+            List<Tuple2<NamedEntity, Integer>> output = counts.collect();
 
-            for (Tuple2<?, ?> tuple : output) {
-                System.out.println(tuple._1() + ": " + tuple._2());
-            }
+            heuristicPrint(output);
 
             sc.stop();
             
@@ -170,5 +168,69 @@ public class FeedReaderMain {
         }
     }
 
-}
+    public static void heuristicPrint(List<Tuple2<NamedEntity, Integer>> output ) {
 
+        System.out.printf(
+        "%-30s | %10s | %20s | %-20s%n", 
+        "Name", "Frequency", "Category", "Theme"
+        );
+        System.out.printf(
+        "%-30s-+-%10s-+-%-20s%n", 
+        "-".repeat(30), "-".repeat(10), "-".repeat(20)
+        );
+        Counter person = new Counter();
+        Counter country = new Counter();
+        Counter city = new Counter();
+        Counter address = new Counter();
+        Counter company = new Counter();
+        Counter product = new Counter();
+        Counter event = new Counter();
+        Counter date = new Counter();
+        Counter other = new Counter();
+
+        for (Tuple2<?, ?> tuple : output) {
+            NamedEntity e = (NamedEntity) tuple._1();
+            System.out.printf(
+            "%-30s | %10s | %20s | %-20s%n",
+            e.getName(),
+            tuple._2(),
+            e.getCategory(),
+            e.getTheme().getName()
+        );
+
+
+        if(e.getCategory().equals("Person")){
+            person.increment();
+        }else if(e.getCategory().equals("Company")){
+            company.increment();
+        }else if(e.getCategory().equals("Country")){
+            country.increment();
+        }else if(e.getCategory().equals("City")){
+            city.increment();
+        }else if(e.getCategory().equals("Address")){
+            address.increment();
+        }else if(e.getCategory().equals("Product")){
+            product.increment();
+        }else if(e.getCategory().equals("Date")){
+            date.increment();
+        }else if(e.getCategory().equals("Event")){
+            event.increment();
+        }else if(e.getCategory().equals("Other")){
+            other.increment();
+        }
+
+        }
+
+        
+        System.out.printf(
+        "%-20s | %10s | %10s | %10s | %20s | %10s | %10s | %10s | %-20s%n", 
+        "Personas", "Paises", "Ciudades", "Direcciones", "CompaÃ±ias", "Productos", "Eventos", "Fechas", "Otras"
+        );
+        System.out.printf(
+        "%-20s | %10s | %10s | %10s | %20s | %10s | %10s | %10s | %-20s%n", 
+        person.getValue(), country.getValue(), city.getValue(), address.getValue(), company.getValue(), product.getValue(), event.getValue(), date.getValue(), other.getValue()
+        );
+
+        System.out.println("Cantidad de entidades:" + output.size());
+    }
+}
